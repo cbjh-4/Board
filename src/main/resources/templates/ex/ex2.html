@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf Example</title>
+</head>
+<body>
+    <h1>Thymeleaf Example</h1>
+    <div th:each="str : ${strList}">
+        [[${str}]]
+    </div>
+    <div th:each="m : ${map}"> [[${m}]]</div>
+    <div th:each="dto : ${sampleDTO}"> [[${dto}]]</div>
+    <div>
+        <li th:text = "${sampleDTO.p1}"></li>
+        <li th:text = "${sampleDTO.p2}"></li>
+        <li th:text = "${sampleDTO.p3}"></li>
+    </div>
+
+    <script th:inline="javascript">
+        const list = [[${strList}]]
+        const map = [[${map}]]
+        const dto = [[${sampleDTO}]]
+        console.log(list)
+        console.log(map)
+        console.log(dto)
+    </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<head>
+    <title>Board Modify</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Board Modify
+                </div>
+                <div class="card-body">
+                    <form th:action="@{board/modify}" method="post" id="f1">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Bno</span>
+                        <input type="text" name="bno" class="form-control" th:value="${dto.bno}" readonly>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Title</span>
+                        <input type="text" name="title" class="form-control" th:value="${dto.title}" >
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Content</span>
+                        <textarea name="content" class="form-control col-sm-5"
+                                  rows="5" >[[${dto.content}]]</textarea>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Writer</span>
+                        <input type="text" name="writer" class="form-control" th:value="${dto.writer}" readonly>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">RegDate</span>
+                        <input type="text" name="regdate" class="form-control"
+                               th:value="${#temporals.format(dto.regDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">ModDate</span>
+                        <input type="text" name="moddate" class="form-control"
+                               th:value="${#temporals.format(dto.modDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
+                    </div>
+                    <div class="my-4">
+                        <div class="float-end">
+                            <button type="button" class="btn btn-primary listBtn">List</button>
+                            <button type="button" class="btn btn-secondary modBtn">Modify</button>
+                            <button type="button" class="btn btn-danger removeBtn">Delete</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>       <!--end cardBody-->
+            </div>      <!--end card-->
+        </div>      <!--end col-->
+    </div>      <!--end row mt-3-->
+</div>
+<script layout:fragment="script" th:inline="javascript">
+    const errors = [[${errors}]]
+    let errorMsg = ''
+    if(errors){
+        for(let i=0; i<errors.length; i++){
+            errorMsg += `${errors[i].field}은(는) ${errors[i].code} \n`
+        }
+        history.replaceState({}, null, null)
+        alert(errorMsg)
+    }
+
+    const link = [[${pageRequestDTO.getLink()}]]; // 페이지 요청에 대한 링크 정보를 가져와 link 변수에 할당합니다.
+    const formObj = document.querySelector("#f1"); // id가 'f1'인 폼 요소를 찾아 formObj 변수에 할당합니다.
+
+    //Modify 버튼을 눌렀을 때, 이벤트 처리
+    document.querySelector(".modBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        formObj.action = `/board/modify?${link}`
+        formObj.method = 'post'
+        formObj.submit()
+    }, false)
+
+    //Delete 버튼을 눌렀을 때, 이벤트 처리
+    document.querySelector(".removeBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        formObj.action = `/board/remove`
+        formObj.method = 'post'
+        formObj.submit()
+    }, false)
+
+    document.querySelector(".listBtn").addEventListener("click", function (e) { // .listBtn 클래스를 가진 요소에 클릭 이벤트 리스너를 추가합니다.
+        e.preventDefault(); // 기본 동작을 방지합니다. (여기서는 a 태그의 클릭 이벤트를 막습니다.)
+        e.stopPropagation(); // 이벤트의 전파를 중단합니다. (부모 요소로의 이벤트 전파를 막습니다.)
+        formObj.reset(); // formObj의 내용을 초기화합니다. (폼 요소 내의 입력값들을 초기화합니다.)
+        self.location = `/board/list?${link}`; // 현재 페이지를 새로운 URL로 이동합니다. (페이지 요청에 대한 링크를 포함한 새 URL로 이동합니다.)
+    }, false);
+</script>
+</html>
